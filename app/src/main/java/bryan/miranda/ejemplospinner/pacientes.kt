@@ -7,7 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Adapter
 import android.widget.ArrayAdapter
+import android.widget.CalendarView
+import android.widget.EditText
 import android.widget.Spinner
+import android.widget.TextView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
@@ -29,9 +32,11 @@ class pacientes : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
             val root = inflater.inflate(R.layout.fragment_pacientes, container, false)
         //spinner
         val spDoctores = root.findViewById<Spinner>(R.id.spDoctores)
+        val txtFechaNacimiento = root.findViewById<EditText>(R.id.txtFechaNacimiento)
 
         //creamos la funcion que haga un select
         fun obtenerDoctores(): List<dataClassDoctores>{
@@ -67,6 +72,24 @@ class pacientes : Fragment() {
             }
         }
 
+
+//Mostrar el calendario al hacer click en el EditText txtFechaNacimientoPaciente
+        txtFechaNacimiento.setOnClickListener {
+            val calendario = CalendarView.getInstance()
+            val anio = calendario.get(Calendar.YEAR)
+            val mes = calendario.get(Calendar.MONTH)
+            val dia = calendario.get(Calendar.DAY_OF_MONTH)
+            val datePickerDialog = DatePickerDialog(
+                requireContext(),
+                { view, anioSeleccionado, mesSeleccionado, diaSeleccionado ->
+                    val fechaSeleccionada =
+                        "$diaSeleccionado/${mesSeleccionado + 1}/$anioSeleccionado"
+                    txtFechaNacimiento.setText(fechaSeleccionada)
+                },
+                anio, mes, dia
+            )
+            datePickerDialog.show()
+        }
 
 
         return root
